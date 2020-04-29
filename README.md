@@ -1,7 +1,7 @@
 # PCAP (Pcap Content Analysis and Processing)
 
 PCAP will eventually allow for a wide variety of useful automated analysis. Right now it only supports analyzing webhosts. 
-The results are then emailed via gmail to you. A Gmail account and Virus Total API key is required for the program to function. Must be converted to .jar before use using an ide. Gmail account with also need to allow access to less secure apps even through I use TLS in PCAP.
+The results are then emailed via gmail to you. A Gmail account and Virus Total API key is required for the program to function. Must be converted to .jar before use using an ide. Gmail account will also need to allow access to less secure apps even through I use TLS in PCAP.
 
 Current Features:  
 As stated earlier PCAP can currently go through PCAPs and figure out what websites host are downloading stuff from via GET request. This is done by looking at the packet payload since is not encrypted. Found webhost are sent to Virus Total for analysis and can then be retrieved at a later time. Reports are emailed.
