@@ -7,7 +7,7 @@ Current Features:
 As stated earlier PCAP can only go through PCAPs and figure out what websites host are downloading stuff from. This is done by looking at the packet payload since is not encrypted. Looks at destination ports 80 and 8080. Found webhost are sent to Virus Total for analysis and can then be retrieved at a later time. Reports are emailed. 
 
 Future Features:  
-ARP flooding detection
-SQL injection detection
-Port scanning detection
-and more
+ARP flooding detection  
+SQL injection detection  
+Port scanning detection  
+and more  
