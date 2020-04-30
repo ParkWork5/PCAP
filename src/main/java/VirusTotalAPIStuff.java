@@ -19,7 +19,7 @@ public class VirusTotalAPIStuff {
     private URLConnection connection;
     private HttpURLConnection http;
     private URL vtUrl;
-    private int responseCode;
+    private int responseCode,goodSend;
     private ArrayList<VTUrlReportModel> urlReports;
     private VTUrlReportModel report;
     private JSONObject object,valueGrabber;
@@ -32,7 +32,7 @@ public class VirusTotalAPIStuff {
 
     public Boolean sendURL(String[] url,String api) {
 
-
+         goodSend = 0; // Request that went through
         try {
             vtUrl = new URL(" https://www.virustotal.com/api/v3/urls");
             connection = vtUrl.openConnection();        // Contacting Virus Total api v3. No v3 libraries out so i had to figure it out
@@ -97,11 +97,23 @@ public class VirusTotalAPIStuff {
                 e.printStackTrace();
             }
 
+            if(responseCode == 200)
+            {
+                goodSend++;
+
+            }
+            else
+            {
+                System.out.print("ERROR: webhost: " + element + "issue with analysis. " + "HTTP Code: " + responseCode);
+            }
+
             http.disconnect();
-            System.out.println("Webhost:" + element + " Code:" + responseCode);
-            System.out.println("");
+            //System.out.println("Webhost:" + element + " Code:" + responseCode);
+            //System.out.println("");
 
         }
+
+        System.out.println(goodSend + "/" + url.length + " web hosts were succesfully sent to VT for analysis");
 
         return true;
 

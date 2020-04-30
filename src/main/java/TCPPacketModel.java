@@ -5,11 +5,12 @@ import java.util.ArrayList;
 public class TCPPacketModel {
 
     private String sourceIP, destIP,payload;
-    private int sourcePort, destPort;
-    private long acknowledgementNumber,sequenceNumber;
+    private int sourcePort, destPort,headerLength;
+    private long acknowledgementNumber,sequenceNumber,arrivalTime;
     private ArrayList<String> flagsSet;
 
-    public TCPPacketModel(String sourceIP, String destIP, String payload, int sourcePort, int destPort, long acknowledgementNumber,long sequenceNumber,ArrayList<String> flagsSet) {
+
+    public TCPPacketModel(String sourceIP, String destIP, String payload, int sourcePort, int destPort, long acknowledgementNumber,long sequenceNumber,ArrayList<String> flagsSet,long arrivalTime,int headerLength) {
         this.sourceIP = sourceIP;    // Data model for TCP packets
         this.destIP = destIP;
         this.payload = payload;
@@ -18,6 +19,10 @@ public class TCPPacketModel {
         this.destPort = destPort;
         this.acknowledgementNumber = acknowledgementNumber;
         this.sequenceNumber = sequenceNumber;
+        this.arrivalTime = arrivalTime;
+        this.headerLength = headerLength;
+
+
     }
 
     public String getSourceIP() {
@@ -82,5 +87,21 @@ public class TCPPacketModel {
 
     public void setFlagsSet(ArrayList<String> flagsSet) {
         this.flagsSet = flagsSet;
+    }
+
+    public int getHeaderLength() {
+        return headerLength;
+    }
+
+    public void setHeaderLength(int headerLength) {
+        this.headerLength = headerLength;
+    }
+
+    public long getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(long arrivalTime) {
+        this.arrivalTime = arrivalTime;
     }
 }

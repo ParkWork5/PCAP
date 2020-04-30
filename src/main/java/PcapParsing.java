@@ -19,13 +19,14 @@ public class PcapParsing {
     private IPv4Packet iPv4Packet;
     private HttpGetModel getModel;
     private ArrayList<HttpGetModel> completeGetList;
-    private int packetSplitLength,destPort,sourcePort,check;
+    private int packetSplitLength,destPort,sourcePort,check,headerLength;
     private String currentLine,currentBuffer,getRequest,destIp,sourceIp,webHost,userAgent,accept,origin,flagSet;
     private ArrayList<TCPPacketModel> tcpPackets;
     private TCPPacketModel tcpPacketModel;
-    private long ackNumber,seqNumber;
+    private long ackNumber,seqNumber,arrivalTime;
     private ArrayList<String> flagsSet;
     private Set<String> uniqueSourceIps, uniqueDestIps, uniqueWebhost;
+
 
 
 
@@ -61,6 +62,9 @@ public class PcapParsing {
                     currentBuffer = String.valueOf(tcpPacket.getPayload());
 
                     seqNumber = tcpPacket.getSequenceNumber();
+                    arrivalTime = tcpPacket.getArrivalTime();
+
+                    headerLength = tcpPacket.getHeaderLength();
 
 
                     if(tcpPacket.isSYN()) // Determines what flags are set int he packet since TCP
@@ -102,7 +106,7 @@ public class PcapParsing {
 
                 }
 
-                tcpPacketModel = new TCPPacketModel(sourceIp,destIp,currentBuffer,sourcePort,destPort,ackNumber,seqNumber,flagsSet);
+                tcpPacketModel = new TCPPacketModel(sourceIp,destIp,currentBuffer,sourcePort,destPort,ackNumber,seqNumber,flagsSet,arrivalTime,headerLength);
                 tcpPackets.add(tcpPacketModel); // Adds new filed model to tcp packet list
 
                 uniqueSourceIps.add(sourceIp); // Adds ips to a Set which only allow unique elements
@@ -183,6 +187,16 @@ public class PcapParsing {
                                  }
 
                      }
+                         if(currentBuffer.contains("exe"))
+                         {
+                             System.out.println("#########################################");
+                             System.out.println("Exe download found");
+                             System.out.println("Source IP: " + sourceIp);
+                             System.out.println("Destination IP: " + destIp);
+                             System.out.println("Webhost/URL: " + webHost);
+
+                             System.out.println("#########################################");
+                         }
 
                      }
 
