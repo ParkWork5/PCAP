@@ -5,7 +5,6 @@ PCAP will eventually allow for a wide variety of useful automated analysis A Gma
 Current Features:  
 1.  
 As stated earlier PCAP can currently go through PCAPs and figure out what websites host are downloading stuff from via GET request. This is done by looking at the packet payload since is not encrypted. Found webhost are sent to Virus Total for analysis and can then be retrieved at a later time. Reports are emailed.
-  
 2.  
 ARP spoofing analysis now works. Parses ARP packet for source ip and mac address. Then maps ips to mac address and then counts the ips mapped to each mac address. If greater than 1 it gets flagged as spoofing. Report is automatically generated and sent to Gmail. 
   
