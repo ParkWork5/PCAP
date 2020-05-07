@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ReportConstructions {
     private String urlId, url,report;
@@ -12,6 +13,7 @@ public class ReportConstructions {
 
     public String constructWebhostsReport(ArrayList<VTUrlReportModel> models)
     {
+        report = "";
 
 
         for(int i=0; i < models.size(); i++)
@@ -48,5 +50,29 @@ public class ReportConstructions {
         }
         return report;
     }
+
+    public String arpSpoofingReport(List<AnalysisArpModel> models)
+    {
+        report = "";
+
+        for(AnalysisArpModel element : models)         // Grabbing value from each model and building report
+        {
+            report = report + "#####################################################\n";
+            report = report + "MAC Address:" + element.getSourceMAC() + "\n";
+            report = report + "Sppofing:" + element.getSpoofing().toString() + "\n";
+            report = report + "Number of IPs:" + element.getIpAddresses().size() + "\n";
+            report = report + "Associated IPs:" + element.getIpAddresses().toString() + "\n";
+            report = report + "#####################################################\n";
+
+        }
+
+
+
+
+
+        return report;
+    }
+
+
 
 }

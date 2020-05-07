@@ -1,5 +1,3 @@
-import io.pkts.buffer.Buffer;
-
 import java.util.ArrayList;
 
 public class TCPPacketModel {

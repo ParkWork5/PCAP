@@ -1,12 +1,8 @@
-
-
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +11,7 @@ import java.util.StringJoiner;
 
 public class VirusTotalAPIStuff {
     private int k=0,harmless,malicious;
-    private String encodedUrl,url,urlId;
+    private String encodedUrl,url;
     private URLConnection connection;
     private HttpURLConnection http;
     private URL vtUrl;
@@ -108,8 +104,6 @@ public class VirusTotalAPIStuff {
             }
 
             http.disconnect();
-            //System.out.println("Webhost:" + element + " Code:" + responseCode);
-            //System.out.println("");
 
         }
 

@@ -1,29 +1,16 @@
-
-import io.pkts.Pcap;
-import io.pkts.buffer.Buffer;
-import io.pkts.packet.Packet;
-import io.pkts.packet.TCPPacket;
-import io.pkts.protocol.Protocol;
-import netscape.javascript.JSObject;
-
-import java.io.*;
-import java.net.*;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.*;
 
 public class Analysis {
 
     private String[] webHosts;
     private int k=0;
-    private String encodedUrl,id;
-    private URLConnection connection;
-    private HttpURLConnection http;
-    private URL vtUrl;
+    private String id;
     private VirusTotalAPIStuff vtAPI = new VirusTotalAPIStuff();
     private ArrayList<String> urlIds;
+    private ArrayList<AnalysisArpModel> arpMappings;
+    private List<AnalysisArpModel> mappedArps;
+    private String sourceIP, sourceMAC,currentMAC;
+
 
     public Analysis() {   // Default constructor
 
@@ -48,9 +35,59 @@ public class Analysis {
 
     }
 
+    public List<AnalysisArpModel> arpAnalysis(ArrayList<ArpModel> arpList, Set<String> uniqueMACS)
+    {
+        arpMappings = new ArrayList<>();
+        mappedArps = new ArrayList<>();
+
+
+        for(String element : uniqueMACS)
+        {
+            AnalysisArpModel arpModel = new AnalysisArpModel(element);
+            mappedArps.add(arpModel); // Adds mac address to model
+        }
+
+
+        for(int i=0; i < arpList.size();i++)
+        {
+            sourceIP = arpList.get(i).getSourceIp();
+            sourceMAC = arpList.get(i).getSourceMACAddress();
+
+
+            for(int r=0; r< mappedArps.size(); r++)    // Instead of mapping ip to macs we are doing the oppisite mac to ips
+            {
+             currentMAC = mappedArps.get(r).getSourceMAC();
+
+             if(currentMAC.equals(sourceMAC))    //If the current unique mac address is the same as the mac address in model list then add to set
+             {
+                 mappedArps.get(r).addIpAddresses(sourceIP); // The second list is a Set. We don't have to worry about duplicate values
+             }
+
+            }
+
+        }
+
+        for(AnalysisArpModel element : mappedArps)
+        {
+            if(element.getIpAddresses().size() > 1)
+            {
+                element.setSpoofing(true);  //Spoofing check
+            }
+            else
+            {
+                element.setSpoofing(false);
+            }
+        }
+
+
+        return mappedArps;
+
+    }
+
     public ArrayList<String> getUrlIds() {
         return urlIds;
     }
+
 
 
 }

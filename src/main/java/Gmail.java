@@ -1,22 +1,19 @@
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.util.ArrayList;
 import java.util.Properties;
 
 public class Gmail {
-    private String report;
     private Properties properties;
     private Session session;
     private Message message;
     private Transport transport;
 
 
-    public void sendReports(ArrayList<VTUrlReportModel> models, String gmail, String password) // Sends report via gmail
+    public void sendReports(String report, String gmail, String password, String emailSubject) // Sends report via gmail
     {
         properties = new Properties();
-        ReportConstructions constructions = new ReportConstructions();
-        report = constructions.constructWebhostsReport(models);
+
 
         properties.put("mail.smtp.host", "smtp.gmail.com"); // Setups email service properties
         properties.put("mail.smtp.port", "587");
@@ -34,11 +31,12 @@ public class Gmail {
 
             message.setFrom(new InternetAddress(gmail));    // Create new message
             message.setRecipient(Message.RecipientType.TO,new InternetAddress(gmail));
-            message.setSubject("Webhost Analysis Report from PCAP");
+            message.setSubject(emailSubject);
             message.setText(report);
             transport = session.getTransport("smtp");
 
             transport.connect("smtp.gmail.com",gmail,password); // Also needs username and password here too. Sets up actual connection
+            System.out.println("Sending email");
             transport.sendMessage(message,message.getAllRecipients());
             transport.close();
         } catch (MessagingException e) {

@@ -1,12 +1,12 @@
 import io.pkts.Pcap;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
-    private String arg,pcapPath="null";
+    private String arg,pcapPath="null",report;
     private int i=0,menuBoi=0;
     private Pcap pcap;
     private Boolean goodToGo = true;
@@ -18,6 +18,9 @@ public class Menu {
     private VirusTotalAPIStuff virusTotal;
     private ArrayList<VTUrlReportModel> models;
     private Gmail gmail;
+    private ArrayList<ArpModel> arpList;
+    private ReportConstructions constructions;
+    private List<AnalysisArpModel> arpModelLst;
 
 
 
@@ -31,12 +34,7 @@ public class Menu {
             if(arg.equals("-pcappath")){
                 pcapPath = args[i++];
 
-                try {
-                    pcap = Pcap.openStream(pcapPath);
-                } catch (IOException e) {
-                    System.out.println("ERROR!! Invalid pcap file path provided");
-                    goodToGo = false;
-                }
+             reloadPcap(pcapPath);
 
             }
             else if(arg.equals("-vtapi")){
@@ -83,6 +81,8 @@ public class Menu {
             virusTotal = new VirusTotalAPIStuff();
             models= new ArrayList<>();
             gmail = new Gmail();
+            arpList = new ArrayList<>();
+            constructions = new ReportConstructions();
 
             foundTcpPackets = pcapParsing.tcpPacketParsing();
 
@@ -103,7 +103,8 @@ public class Menu {
             {
 
                 System.out.println("(1) Look for and send webhosts recieving http request to VT");
-                System.out.println("(2) Grab results from (1) from VT and email webhost analysis report to gmail.");
+                System.out.println("(2) Grab results from (1) from VT and email report.");
+                System.out.println("(3) ARP posioning/flood/spoofing detection with emailed report");
                 System.out.println("(-1) Quit :(");
                 System.out.println("");
 
@@ -135,8 +136,9 @@ public class Menu {
 
 
                    models =  virusTotal.getUrlReports(urlIds,virusTotalAPI); // Gets reports from Virus Total
-                   gmail.sendReports(models,email,emailPassword); // Preps and sends report to gmail
-
+                   constructions = new ReportConstructions();
+                   report = constructions.constructWebhostsReport(models);
+                   gmail.sendReports(report,email,emailPassword,"Webhost Analysis Report from PCAP"); // Preps and sends report to gmail
 
 
                     }
@@ -147,6 +149,14 @@ public class Menu {
                 }
                 else if(menuBoi == 3)
                 {
+                    arpModelLst = new ArrayList<>();
+                    reloadPcap(pcapPath);  // Reloads PCAP because its a stream and it resets it
+
+                   arpList = pcapParsing.arpParsing(pcap); // Looks and parses arp packets
+                   arpModelLst = analysis.arpAnalysis(arpList,pcapParsing.getUniqueSourceMACs()); // Analyzes arp packets and outputs list of models to build report
+
+                   report = constructions.arpSpoofingReport(arpModelLst); // Builds report
+                   gmail.sendReports(report,email,emailPassword,"ARP Spoofing Analysis Report"); // Sends report
 
                 }
 
@@ -155,6 +165,16 @@ public class Menu {
         else
         {
             System.out.println("No analysis for you");
+        }
+    }
+
+    public void reloadPcap(String path)
+    {
+        try {
+            pcap = Pcap.openStream(path);
+        } catch (IOException e) {
+            System.out.println("ERROR!! Invalid pcap file path provided");
+            goodToGo = false;
         }
     }
 }
